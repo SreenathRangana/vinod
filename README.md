@@ -75,13 +75,13 @@ This is handled within the Dockerfile by creating the /jobfile-run directory.
 
 
 -------------------------------------
-Another Approach
+### Another Approach
 Create a Dockerfile
 Here's an example of how your Dockerfile might look to create an NFS server with the necessary setup:
 
 Dockerfile
 
-
+```
 FROM ubuntu:20.04
 
 # Install necessary packages
@@ -110,7 +110,7 @@ EXPOSE 2049
 
 # Start the NFS server
 CMD /sbin/service nfs-kernel-server start && tail -f /dev/null
-
+```
 
 
 ----------------------------------
