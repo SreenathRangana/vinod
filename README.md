@@ -71,9 +71,6 @@ This is handled within the Dockerfile by creating the /jobfile-run directory.
 
 
 
-
-
-
 -------------------------------------
 ### Another Approach
 Create a Dockerfile
