@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  nfs-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nfs-server
+    volumes:
+      - /mnt/nfs:/mnt/nfs
+      - ./secrets:/etc/secrets
+      - /jobfile-run:/jobfile-run
+    ports:
+      - "2049:2049"  # NFS port
+    networks:
+      - mynetwork
+    restart: always
+
+  # Other services that require NFS mount
+  service1:
+    image: your-image1
+    volumes:
+      - nfs-server:/jobfile-run
+    networks:
+      - mynetwork
+
+  service2:
+    image: your-image2
+    volumes:
+      - nfs-server:/jobfile-run
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  nfs-server:
+    driver: local
+
+
+
+# version: '3.8'
+
+# services:
+#   nfs-server:
+#     build: 
+#       context: .
+#       dockerfile: Dockerfile
+#     volumes:
+#       - nfs-data:/jobfile-run
+#     secrets:
+#       - users.txt
+#     networks:
+#       - nfs-network
+
+# volumes:
+#   nfs-data:
+#     driver: local
+
+# secrets:
+#   users.txt:
+#     file: secrets/users.txt
+
+# networks:
+#   nfs-network:
+#     driver: bridge

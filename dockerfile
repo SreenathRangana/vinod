@@ -37,3 +37,5 @@ EXPOSE 2049
 
 # Start the NFS server
 CMD ["sh", "-c", "exportfs -a && service nfs-kernel-server start && tail -f /var/log/syslog"]
+
+
