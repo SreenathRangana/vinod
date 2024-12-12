@@ -118,10 +118,12 @@ CMD /sbin/service nfs-kernel-server start && tail -f /dev/null
 You'll need to create a script (make secrets) to generate secret files. Here's a simple example:
 
 Makefile
+```
 secrets:
     @echo "Creating secrets..."
     @echo "user1:/usr/sbin/nologin" > secrets/users.txt
     @echo "user2:/usr/sbin/nologin" >> secrets/users.txt
+```
 ----------------------------------------------------
 3. Script to Add Users (add_users.sh)
 Create a script to add users based on the secrets file:
