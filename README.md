@@ -126,19 +126,20 @@ secrets:
 3. Script to Add Users (add_users.sh)
 Create a script to add users based on the secrets file:
 
-bash
+```bash
 #!/bin/bash
 while IFS=":" read -r username _; do
     if ! id "$username" &>/dev/null; then
         useradd -s /usr/sbin/nologin "$username"
     fi
 done < /etc/nfs-secret/users.txt
+```
 ---------------------------------------------------
 
 4. Update Docker Compose File
 Here's how you might update your docker-compose.yml to include the NFS server service:
 
-yaml
+```yaml
 version: '3.8'
 
 services:
@@ -164,6 +165,7 @@ secrets:
 networks:
   nfs-network:
     driver: bridge
+```
 ----------------------------------
 5. Ensure Directories are Created
 This is handled within the Dockerfile by creating the /jobfile-run directory.
@@ -172,20 +174,21 @@ This is handled within the Dockerfile by creating the /jobfile-run directory.
 To test if you can connect to the NFS server:
 
 Build and Start the Container:
-sh
+```sh
 docker-compose build
 docker-compose up -d
+```
 
 Verify NFS Server:
 From another container or the host (assuming your host can reach the Docker network), you can mount the NFS share:
 
-sh
+```sh
 docker run -it --rm \
   --network docker-compose_nfs-network \
   --volume nfs-server:/jobfile-run \
   ubuntu:20.04 \
   bash -c "apt-get update && apt-get install -y nfs-common && mount -t nfs nfs-server:/jobfile-run /mnt && ls /mnt"
-
+```
 This command will start an Ubuntu container, install nfs-common, mount the NFS share, and list the contents to confirm connectivity.
 
 Notes:
