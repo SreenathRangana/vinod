@@ -1,43 +1,88 @@
-version: '3.8'
+version: '3.9'
 
 services:
   nfs-server:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nfs-server
+    network_mode: host                  # Use host networking
     volumes:
-      - /mnt/nfs:/mnt/nfs
-      - ./secrets:/etc/secrets
-      - /jobfile-run:/jobfile-run
-    ports:
-      - "2049:2049"  # NFS port
-    networks:
-      - mynetwork
-    restart: always
+      - jobfile-run:/jobfile-run        # Exported directory
+      - ./secrets:/etc/secrets:ro       # Secrets for users
+      - /var/lib/nfs:/var/lib/nfs       # Host NFS state
+      - /etc/exports:/etc/exports       # Host exports file
+      
+    privileged: true                    # Required for NFS kernel access
 
-  # Other services that require NFS mount
-  service1:
-    image: your-image1
-    volumes:
-      - nfs-server:/jobfile-run
-    networks:
-      - mynetwork
+    secrets:
+      - nfs_users
 
-  service2:
-    image: your-image2
-    volumes:
-      - nfs-server:/jobfile-run
-    networks:
-      - mynetwork
-
-networks:
-  mynetwork:
-    driver: bridge
+secrets:
+  nfs_users:
+    file: ./secrets/nfs_users
 
 volumes:
-  nfs-server:
-    driver: local
+  jobfile-run:
+
+
+
+
+  # nfs-client:
+  #   image: debian:latest
+  #   depends_on:
+  #     - nfs-server
+  #   command: >
+  #     bash -c "
+  #     apt-get update && apt-get install -y nfs-common &&
+  #     mkdir -p /mnt/jobfiles &&
+  #     mount -o vers=4,nolock nfs-server:/jobfile-run /mnt/jobfiles &&
+  #     ls /mnt/jobfiles
+  #     "
+
+
+
+
+
+# version: '3.8'
+
+# services:
+#   nfs-server:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: nfs-server
+#     volumes:
+#       - /mnt/nfs:/mnt/nfs
+#       - ./secrets:/etc/secrets
+#       - /jobfile-run:/jobfile-run
+#     ports:
+#       - "2049:2049"  # NFS port
+#     networks:
+#       - mynetwork
+#     restart: always
+
+#   # Other services that require NFS mount
+#   service1:
+#     image: your-image1
+#     volumes:
+#       - nfs-server:/jobfile-run
+#     networks:
+#       - mynetwork
+
+#   service2:
+#     image: your-image2
+#     volumes:
+#       - nfs-server:/jobfile-run
+#     networks:
+#       - mynetwork
+
+# networks:
+#   mynetwork:
+#     driver: bridge
+
+# volumes:
+#   nfs-server:
+#     driver: local
 
 
 
