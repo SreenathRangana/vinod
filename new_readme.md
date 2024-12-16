@@ -9,6 +9,7 @@ Docker Desktop:
 Install Docker Desktop on Windows and ensure it uses the WSL2 backend.
 Enable "Linux containers" mode (not Windows containers).
 Download Docker Desktop.
+
 Windows Subsystem for Linux (WSL2):
 
 Install a Linux distribution (e.g., Ubuntu) via the Microsoft Store.
@@ -16,6 +17,7 @@ Follow the WSL2 setup guide.
 Visual Studio Code:
 
 Install the Remote - WSL extension from the VS Code marketplace.
+
 2. Set Up the Project in WSL2
 Open VS Code in WSL:
 
@@ -26,8 +28,9 @@ Create the Project Structure: Inside your WSL terminal, create the project folde
 ```bash
 
 mkdir nfs-service && cd nfs-service
-Create the Required Files:
+
 ```
+Create the Required Files:
 
 Dockerfile:
 
@@ -51,8 +54,9 @@ RUN chmod +x /usr/local/bin/setup_nfs.sh
 EXPOSE 111/udp 2049/tcp
 
 ENTRYPOINT ["/usr/local/bin/setup_nfs.sh"]
-setup_nfs.sh:
+
 ```
+setup_nfs.sh:
 
 ```bash
 
@@ -112,8 +116,14 @@ volumes:
   ```
 Makefile:
 
+
+#Makefile 
+#Ensure that the commands are indented using tabs (\t) instead of spaces. Below is the corrected version of your Makefile:
+#using sed to Replace Spaces with Tabs: If you accidentally used spaces, you can replace them with tabs using this command:
+```bash
+sed -i 's/^    /\t/' Makefile
+```
 ```bash 
-#Makefile
 secrets:
     @mkdir -p secrets
     echo "user1:password1" > secrets/nfs_users
@@ -180,29 +190,49 @@ This setup leverages WSL2 for compatibility with Linux-based NFS operations, ens
 
 
 
+## Running an NFS server in a Docker container on a Windows machine using Visual Studio Code (VS Code) can be tricky because Windows and Linux handle paths differently, and Windows doesn't natively support Linux's /etc/exports file or NFS. Here’s a clear guide to resolve this issue and get the setup running locally.
+Install WSL command
+You can now install everything you need to run WSL with a single command. Open PowerShell or Windows Command Prompt in administrator mode by right-clicking and selecting "Run as administrator", enter the wsl --install command, then restart your machine.
+
+PowerShell Admin 
+```
+wsl --install
+```
+setup username and passward 
+
+after follow steps  in powershell
+
+sreenath@Sreenath:~/my-project/nfs-service$ history
+    1  mkdir my-nfs-project
+    2  uname -a
+    3  mkdir nfs-service && cd nfs-service
+    4  touch Dockerfile
+    5  touch Makefile
+    6  sudo mkdir -p /var/lib/nfs
+    7  sudo touch /etc/exports
+    8  make secrets
+    9  sudo apt install make
+   10  make secrets
+   11  ls
+   12  make Makefile
+   13  make secrets
+   14  sed -i 's/^    /\t/' Makefile
+   15  make secrets
+   16  docker-compose up --build
+   17  history
 
 
 
 
+## while docker-compose up facing errors
+
+# Errors: 
+
+# Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/etc/exports" to rootfs at "/etc/exports": mount /etc/exports:/etc/exports (via /proc/self/fd/6), flags: 0x5000: not a directory: unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type
 
 
 
+# Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/proc/fs/nfsd" to rootfs at "/proc/fs/nfsd": "/var/lib/docker/overlay2/3d22104624fce32e780625234d86165ec5332bcbd1bffd4840e91dd0ed9517af/merged/proc/fs/nfsd" cannot be mounted because it is inside /proc: unknown
 
 
 
-
-
-
-while docker-compose up facing errors
-
-Errors: 
-
-Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/etc/exports" to rootfs at "/etc/exports": mount /etc/exports:/etc/exports (via /proc/self/fd/6), flags: 0x5000: not a directory: unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type
-
-
-
-#Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/proc/fs/nfsd" to rootfs at "/proc/fs/nfsd": "/var/lib/docker/overlay2/3d22104624fce32e780625234d86165ec5332bcbd1bffd4840e91dd0ed9517af/merged/proc/fs/nfsd" cannot be mounted because it is inside /proc: unknown
-
-
-
-Running an NFS server in a Docker container on a Windows machine using Visual Studio Code (VS Code) can be tricky because Windows and Linux handle paths differently, and Windows doesn't natively support Linux's /etc/exports file or NFS. Here’s a clear guide to resolve this issue and get the setup running locally.
