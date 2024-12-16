@@ -203,6 +203,7 @@ setup username and passward
 after follow steps  in powershell
 
 sreenath@Sreenath:~/my-project/nfs-service$ history
+```
     1  mkdir my-nfs-project
     2  uname -a
     3  mkdir nfs-service && cd nfs-service
@@ -220,7 +221,7 @@ sreenath@Sreenath:~/my-project/nfs-service$ history
    15  make secrets
    16  docker-compose up --build
    17  history
-
+```
 
 
 
